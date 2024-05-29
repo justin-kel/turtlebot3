@@ -34,6 +34,7 @@ def generate_launch_description():
     LDS_LAUNCH_FILE = '/hlds_laser.launch.py'
 
     usb_port = LaunchConfiguration('usb_port', default='/dev/ttyACM0')
+    namespace = LaunchConfiguration('namespace')
 
     tb3_param_dir = LaunchConfiguration(
         'tb3_param_dir',
@@ -59,6 +60,11 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
 
     return LaunchDescription([
+        DeclareLaunchArgument(
+            'namespace',
+            default_value='',
+            description=''),
+
         DeclareLaunchArgument(
             'use_sim_time',
             default_value=use_sim_time,
@@ -88,6 +94,7 @@ def generate_launch_description():
         Node(
             package='turtlebot3_node',
             executable='turtlebot3_ros',
+            namespace=namespace,
             parameters=[tb3_param_dir],
             arguments=['-i', usb_port],
             output='screen'),

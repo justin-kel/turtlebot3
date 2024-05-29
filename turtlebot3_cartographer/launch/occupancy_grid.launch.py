@@ -40,11 +40,17 @@ def generate_launch_description():
             'use_sim_time',
             default_value='false',
             description='Use simulation (Gazebo) clock if true'),
+            
+        DeclareLaunchArgument(
+            'namespace',
+            default_value='',
+            description='Define ROS namespaces for Nodes'),
 
         Node(
             package='cartographer_ros',
             executable='cartographer_occupancy_grid_node',
             name='cartographer_occupancy_grid_node',
+            namespace=namespace,
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
             arguments=['-resolution', resolution, '-publish_period_sec', publish_period_sec]),

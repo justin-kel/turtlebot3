@@ -1,0 +1,38 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/justin/ws_protocol_experiments/build/turtlebot3_teleop",
+        "/home/justin/ws_protocol_experiments/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/justin/ws_protocol_experiments/build/turtlebot3_example",
+        "/home/justin/ws_protocol_experiments/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/home/justin/ws_protocol_experiments/install/tb3_bringup/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/network_testing/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/dwb_msgs/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/nav_2d_msgs/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/build/nav2_simple_commander",
+        "/home/justin/ws_protocol_experiments/install/nav2_simple_commander/lib/python3.10/site-packages",
+        "/home/justin/ws_protocol_experiments/install/nav2_msgs/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/nav2_common/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/gazebo_ros/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/gazebo_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/justin/ws_protocol_experiments/build/turtlebot3_teleop",
+        "/home/justin/ws_protocol_experiments/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/justin/ws_protocol_experiments/build/turtlebot3_example",
+        "/home/justin/ws_protocol_experiments/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/home/justin/ws_protocol_experiments/install/tb3_bringup/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/network_testing/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/dwb_msgs/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/nav_2d_msgs/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/build/nav2_simple_commander",
+        "/home/justin/ws_protocol_experiments/install/nav2_simple_commander/lib/python3.10/site-packages",
+        "/home/justin/ws_protocol_experiments/install/nav2_msgs/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/nav2_common/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/gazebo_ros/local/lib/python3.10/dist-packages",
+        "/home/justin/ws_protocol_experiments/install/gazebo_msgs/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}
