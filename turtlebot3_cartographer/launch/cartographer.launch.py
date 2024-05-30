@@ -117,7 +117,8 @@ def generate_launch_description():
     )
 
     start_rviz_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/cartographer_rviz.launch.py']),        
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/cartographer_rviz.launch.py']),\
+        condition=IfCondition(use_rviz),  
         launch_arguments={'use_namespace': use_namespace,
                           'namespace': namespace, 
                           'rviz_config': rviz_config}.items()
