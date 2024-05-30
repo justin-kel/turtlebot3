@@ -59,7 +59,14 @@ def generate_launch_description():
         package='rviz2',
         executable='rviz2',
         arguments=['-d', rviz_config],
-        output='screen')
+        output='screen',
+        remappings=[('/map', 'map'),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
+            ('/goal_pose', 'goal_pose'),
+            ('/clicked_point', 'clicked_point'),
+            ('/initialpose', 'initialpose')])
+
     
     namespaced_rviz_config_file = ReplaceString(
             source_file=rviz_config,
@@ -71,7 +78,13 @@ def generate_launch_description():
         executable='rviz2',
         namespace=namespace,
         arguments=['-d', namespaced_rviz_config_file],
-        output='screen')
+        output='screen',        
+        remappings=[('/map', 'map'),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static'),
+            ('/goal_pose', 'goal_pose'),
+            ('/clicked_point', 'clicked_point'),
+            ('/initialpose', 'initialpose')])
     
     ld = LaunchDescription()
     ld.add_action(declare_use_namespace_cmd)

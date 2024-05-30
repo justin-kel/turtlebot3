@@ -52,7 +52,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'namespace',
             default_value='',
-            description=''),
+            description='Declare namespace'),
 
         DeclareLaunchArgument(
             'use_sim_time',
@@ -64,5 +64,8 @@ def generate_launch_description():
             executable='robot_state_publisher',
             namespace=namespace,
             output='screen',
+            remappings=[('/map', 'map'),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')],
             parameters=[rsp_params, {'use_sim_time': use_sim_time}])
     ])
