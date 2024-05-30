@@ -24,6 +24,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     resolution = LaunchConfiguration('resolution', default='0.05')
     publish_period_sec = LaunchConfiguration('publish_period_sec', default='1.0')
+    namespace = LaunchConfiguration('namespace')
 
     return LaunchDescription([
         DeclareLaunchArgument(

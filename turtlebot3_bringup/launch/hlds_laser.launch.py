@@ -14,55 +14,45 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Authors: Darby Lim
+# Authors: Darby Lim, Pyo
 
 import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.actions import LogInfo
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
-
-    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
-    urdf_file_name = 'turtlebot3_' + TURTLEBOT3_MODEL + '.urdf'
+    port = LaunchConfiguration('port', default='/dev/ttyUSB0')
     namespace = LaunchConfiguration('namespace')
-
-    print("urdf_file_name : {}".format(urdf_file_name))
-
-    urdf = os.path.join(
-        get_package_share_directory('turtlebot3_description'),
-        'urdf',
-        urdf_file_name)
-
-    # Major refactor of the robot_state_publisher
-    # Reference page: https://github.com/ros2/demos/pull/426
-    with open(urdf, 'r') as infp:
-        robot_desc = infp.read()
-
-    rsp_params = {'robot_description': robot_desc}
-
-    # print (robot_desc) # Printing urdf information.
+    frame_id = LaunchConfiguration('frame_id', default='laser')
 
     return LaunchDescription([
+
+        DeclareLaunchArgument(
+            'port',
+            default_value=port,
+            description='Specifying usb port to connected lidar'),
+
         DeclareLaunchArgument(
             'namespace',
             default_value='',
-            description=''),
+            description='namespace for scan topic'),
 
         DeclareLaunchArgument(
-            'use_sim_time',
-            default_value='false',
-            description='Use simulation (Gazebo) clock if true'),
+            'frame_id',
+            default_value=frame_id,
+            description='Specifying frame_id of lidar. Default frame_id is \'laser\''),
 
         Node(
-            package='robot_state_publisher',
-            executable='robot_state_publisher',
+            package='hls_lfcd_lds_driver',
+            executable='hlds_laser_publisher',
+            name='hlds_laser_publisher',
             namespace=namespace,
-            output='screen',
-            parameters=[rsp_params, {'use_sim_time': use_sim_time}])
+            parameters=[{'port': port, 'frame_id': frame_id}],
+            output='screen'),
     ])

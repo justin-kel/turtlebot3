@@ -19,9 +19,9 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch_ros.actions import Node
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, AndSubstitution, NotSubstitution
 from launch.actions import IncludeLaunchDescription
-from launch.conditions import IfCondition
+from launch.conditions import IfCondition, UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import ThisLaunchFileDir
 from nav2_common.launch import ReplaceString
@@ -40,76 +40,103 @@ def generate_launch_description():
 
     namespace = LaunchConfiguration('namespace')
 
-    rviz_config_path = os.path.join(get_package_share_directory('turtlebot3_cartographer'),
-                                   'rviz', 'tb3_cartographer_namespaced.rviz')
+    use_namespace = LaunchConfiguration('use_namespace')
+    
+    rviz_config = LaunchConfiguration('rviz_config')
     
     use_rviz = LaunchConfiguration('use_rviz')
 
-    namespaced_rviz_config_file = ReplaceString(
-            source_file=rviz_config_path,
-            replacements={'<namespace>': ('/', namespace)}),
+    declare_cartographer_config_dir_cmd = DeclareLaunchArgument(
+                                            'cartographer_config_dir',
+                                            default_value=cartographer_config_dir,
+                                            description='Full path to config file to load')
+
+    declare_configuration_basename_cmd = DeclareLaunchArgument(
+        'configuration_basename',
+        default_value=configuration_basename,
+        description='Name of lua file for cartographer')
+
+    declare_use_sim_time_cmd = DeclareLaunchArgument(
+        'use_sim_time',
+        default_value='false',
+        description='Use simulation (Gazebo) clock if true')
     
-    return LaunchDescription([
-        DeclareLaunchArgument(
-            'cartographer_config_dir',
-            default_value=cartographer_config_dir,
-            description='Full path to config file to load'),
+    declare_use_namespace_cmd = DeclareLaunchArgument(
+        'use_namespace',
+        default_value='false',
+        description='Whether to apply a namespace to the navigation stack')
+    
+    declare_namespace_cmd = DeclareLaunchArgument(
+        'namespace',
+        default_value='',
+        description='Define ROS namespaces for Nodes')
 
-        DeclareLaunchArgument(
-            'configuration_basename',
-            default_value=configuration_basename,
-            description='Name of lua file for cartographer'),
+    declare_resolution_cmd = DeclareLaunchArgument(
+        'resolution',
+        default_value=resolution,
+        description='Resolution of a grid cell in the published occupancy grid')
 
-        DeclareLaunchArgument(
-            'use_sim_time',
-            default_value='false',
-            description='Use simulation (Gazebo) clock if true'),
+    declare_publish_period_sec_cmd = DeclareLaunchArgument(
+        'publish_period_sec',
+        default_value=publish_period_sec,
+        description='OccupancyGrid publishing period')
 
-        DeclareLaunchArgument(
-            'namespace',
-            default_value='',
-            description='Define ROS namespaces for Nodes'),
-
-        DeclareLaunchArgument(
-            'resolution',
-            default_value=resolution,
-            description='Resolution of a grid cell in the published occupancy grid'),
-
-        DeclareLaunchArgument(
-            'publish_period_sec',
-            default_value=publish_period_sec,
-            description='OccupancyGrid publishing period'),
-
-        DeclareLaunchArgument(
-            'use_rviz',
-            default_value='true',
-            description='OccupancyGrid publishing period'),
-            
-        Node(
-            package='cartographer_ros',
-            executable='cartographer_node',
-            name='cartographer_node',
-            namespace=namespace,
-            output='screen',
-            parameters=[{'use_sim_time': use_sim_time}],
-            arguments=['-configuration_directory', cartographer_config_dir,
-                       '-configuration_basename', configuration_basename]),
+    declare_use_rviz_cmd = DeclareLaunchArgument(
+        'use_rviz',
+        default_value='true',
+        description='OccupancyGrid publishing period')
+    
+    declare_default_rviz_config_file_cmd = DeclareLaunchArgument(
+        'rviz_config',
+        condition=UnlessCondition(use_namespace),
+        default_value=os.path.join(get_package_share_directory('turtlebot3_cartographer'),
+                                   'rviz', 'tb3_cartographer.rviz'))
+    
+    declare_namespaced_rviz_config_file_cmd = DeclareLaunchArgument(
+        'rviz_config',
+        condition=IfCondition(use_namespace),
+        default_value=os.path.join(get_package_share_directory('turtlebot3_cartographer'),
+                                   'rviz', 'tb3_cartographer_namespaced.rviz'))
+    
+    start_cartographer_cmd = Node(
+        package='cartographer_ros',
+        executable='cartographer_node',
+        name='cartographer_node',
+        namespace=namespace,
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}],
+        arguments=['-configuration_directory', cartographer_config_dir,
+                '-configuration_basename', configuration_basename])
 
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/occupancy_grid.launch.py']),
-            launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
-                              'publish_period_sec': publish_period_sec,
-                              'namespace': namespace}.items(),
-        ),
-                
-        Node(
-            condition=IfCondition(use_rviz),
-            package='rviz2',
-            executable='rviz2',
-            name='rviz2',
-            namespace=namespace,
-            arguments=['-d', namespaced_rviz_config_file],
-            parameters=[{'use_sim_time': use_sim_time}],
-            output='screen'),
-    ])
+    start_occupancy_grid_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/occupancy_grid.launch.py']),
+        launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
+                            'publish_period_sec': publish_period_sec,
+                            'namespace': namespace}.items()
+    )
+
+    start_rviz_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([ThisLaunchFileDir(), '/cartographer_rviz.launch.py']),        
+        launch_arguments={'use_namespace': use_namespace,
+                          'namespace': namespace, 
+                          'rviz_config': rviz_config}.items()
+    )
+
+    ld = LaunchDescription()
+    ld.add_action(declare_cartographer_config_dir_cmd)
+    ld.add_action(declare_configuration_basename_cmd)
+    ld.add_action(declare_use_sim_time_cmd)
+    ld.add_action(declare_use_namespace_cmd)
+    ld.add_action(declare_namespace_cmd)
+    ld.add_action(declare_resolution_cmd)
+    ld.add_action(declare_publish_period_sec_cmd)
+    ld.add_action(declare_use_rviz_cmd)
+    ld.add_action(declare_default_rviz_config_file_cmd)
+    ld.add_action(declare_namespaced_rviz_config_file_cmd)
+    ld.add_action(start_cartographer_cmd)
+    ld.add_action(start_occupancy_grid_cmd)
+    ld.add_action(start_rviz_cmd)
+
+
+    return ld
