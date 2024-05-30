@@ -54,5 +54,9 @@ def generate_launch_description():
             namespace=namespace,
             output='screen',
             parameters=[{'use_sim_time': use_sim_time}],
+            remappings=[('/map', 'map'),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')],
             arguments=['-resolution', resolution, '-publish_period_sec', publish_period_sec]),
+
     ])

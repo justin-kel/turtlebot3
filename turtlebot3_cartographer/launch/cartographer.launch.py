@@ -119,9 +119,6 @@ def generate_launch_description():
         launch_arguments={'use_sim_time': use_sim_time, 'resolution': resolution,
                             'publish_period_sec': publish_period_sec,
                             'namespace': namespace}.items(),
-        remappings=[('/map', 'map'),
-            ('/tf', 'tf'),
-            ('/tf_static', 'tf_static')],
     )
 
     start_rviz_cmd = IncludeLaunchDescription(
