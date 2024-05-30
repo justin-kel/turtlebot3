@@ -107,9 +107,9 @@ def generate_launch_description():
         parameters=[{'use_sim_time': use_sim_time}],
         remappings=[('/map', 'map'),
             ('/tf', 'tf'),
-            ('/tf_static', 'tf_static')]
+            ('/tf_static', 'tf_static')],
         arguments=['-configuration_directory', cartographer_config_dir,
-                '-configuration_basename', configuration_basename],
+                '-configuration_basename', configuration_basename]
     )
 
 
