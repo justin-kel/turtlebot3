@@ -24,7 +24,7 @@
         illumination: 0
         ir: 0
         sonar: 0
-
+/**:
   diff_drive_controller:
     ros__parameters:
 
