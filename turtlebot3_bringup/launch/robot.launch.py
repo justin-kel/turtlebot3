@@ -97,5 +97,9 @@ def generate_launch_description():
             namespace=namespace,
             parameters=[tb3_param_dir],
             arguments=['-i', usb_port],
-            output='screen'),
+            output='screen',
+            remappings=[('/map', 'map'),
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')],
+            ),
     ])
